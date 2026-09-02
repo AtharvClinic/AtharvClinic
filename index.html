@@ -1,0 +1,1579 @@
+// ==========================================
+// ATHARV CLINIC - CLINICAL & AYURVEDIC PLATFORM
+// Chief Specialist: Dr. Suman Kesharwani
+// ==========================================
+
+import React, { useState, useRef, useEffect } from 'react';
+import { 
+  Calendar, 
+  Clock, 
+  Phone, 
+  MapPin, 
+  ShieldCheck, 
+  User, 
+  Sparkles, 
+  Activity, 
+  Award, 
+  Star, 
+  CheckCircle, 
+  ChevronRight, 
+  Menu, 
+  X, 
+  Mail, 
+  AlertCircle, 
+  FileText, 
+  ArrowRight,
+  Search,
+  ChevronDown,
+  Droplet,
+  Feather,
+  Sun,
+  Smile,
+  Check,
+  Zap,
+  Leaf,
+  Volume2,
+  VolumeX,
+  Loader2,
+  Bot,
+  Wand2,
+  RefreshCw,
+  ClipboardList,
+  Filter,
+  CheckSquare,
+  XSquare,
+  Trash2,
+  Lock,
+  KeyRound,
+  LogOut,
+  UserCheck,
+  Image as ImageIcon,
+  ExternalLink,
+  Sliders,
+  ArrowLeft,
+  Plus,
+  Upload
+} from 'lucide-react';
+
+export default function App() {
+  // ==========================================
+  // SECTION 1: APPLICATION STATE & NAVIGATION
+  // ==========================================
+  const [currentPage, setCurrentPage] = useState('home'); // 'home' | 'gallery'
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
+  const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [adminPinInput, setAdminPinInput] = useState('');
+  const [pinError, setAdminError] = useState('');
+
+  // Admin PIN management state
+  const [adminPin, setAdminPin] = useState('1234');
+  const [newPinInput, setNewPinInput] = useState('');
+  const [confirmPinInput, setConfirmPinInput] = useState('');
+  const [pinChangeSuccess, setPinChangeSuccess] = useState('');
+
+  // New photo upload modal state (as requested in screenshot)
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [uploadTitle, setUploadTitle] = useState('');
+  const [uploadCategory, setUploadCategory] = useState('Skincare');
+  const [uploadPosition, setUploadPosition] = useState('Homepage Hero Slider & Gallery');
+  const [uploadDesc, setUploadDesc] = useState('');
+  const [uploadImageFile, setUploadImageFile] = useState(null);
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedDept, setSelectedDept] = useState('All');
+  const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [bookingRef, setBookingRef] = useState('');
+
+  // ==========================================
+  // SECTION 2: GALLERY & TREATMENT PHOTOS DATA
+  // ==========================================
+  const [galleryCategoryFilter, setGalleryCategoryFilter] = useState('All');
+  const galleryCategories = ['All', 'Skincare', 'Hair Care', 'Panchkarma'];
+  
+  const [galleryItems, setGalleryItems] = useState([
+    {
+      id: 1,
+      title: 'Advanced Facial Skincare & Peels',
+      category: 'Skincare',
+      positions: ['Hero Slider', 'Gallery'],
+      img: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=600',
+      desc: 'Deep cleansing, chemical exfoliation & acne reduction under Dr. Suman'
+    },
+    {
+      id: 2,
+      title: 'PRP & Hair Restoration Therapy',
+      category: 'Hair Care',
+      positions: ['Hero Slider', 'Gallery'],
+      img: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&q=80&w=600',
+      desc: 'Root follicle stimulation and scalp rejuvenation'
+    },
+    {
+      id: 3,
+      title: 'Shirodhara & Panchkarma Detox',
+      category: 'Panchkarma',
+      positions: ['Hero Slider', 'Gallery'],
+      img: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=600',
+      desc: 'Authentic Ayurvedic oil flow for deep relaxation & detox'
+    },
+    {
+      id: 4,
+      title: 'LED Light Skin Therapy',
+      category: 'Skincare',
+      positions: ['Gallery'],
+      img: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=600',
+      desc: 'Collagen boost & skin texture enhancement'
+    },
+    {
+      id: 5,
+      title: 'Herbal Abhyanga Massage',
+      category: 'Panchkarma',
+      positions: ['Gallery'],
+      img: 'https://images.unsplash.com/photo-1512290900676-26c2a4d48dc1?auto=format&fit=crop&q=80&w=600',
+      desc: 'Traditional warm herbal oil full body treatment'
+    },
+    {
+      id: 6,
+      title: 'Trichology Scalp Analysis',
+      category: 'Hair Care',
+      positions: ['Gallery'],
+      img: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=600',
+      desc: 'Precise hair density and root health diagnostic'
+    }
+  ]);
+
+  // ==========================================
+  // SECTION 2.5: CMS TEXT CONTENT STATE
+  // ==========================================
+  const [siteContent, setSiteContent] = useState({
+    heroBadge: 'Led by Dr. Suman Kesharwani • Ayurveda & Dermatology',
+    heroTitleHighlight: 'Skincare & Panchkarma',
+    heroTitleMain: 'Natural Healing & Modern Care for',
+    heroSubtitle: 'Welcome to Atharv Clinic by Dr. Suman Kesharwani. Combining authentic Ayurvedic Panchkarma detox and modern dermatology for radiant skin and holistic wellness.',
+    aiSectionTitle: '✨ AI Skin, Hair & Panchkarma Advisor',
+    aiSectionDesc: 'Describe your symptoms or cosmetic goals to receive instant AI clinical guidance, routine tips, and tailored Atharv Clinic treatment recommendations.',
+    specialtiesHeader: 'Our Core Specialty Highlights',
+    doctorsHeader: 'Meet Dr. Suman Kesharwani',
+    contactAddress: 'Atharv Clinic, Ground floor, RG Empire, Below Bodyline fitness, Manu Chowk, Tikrapara, Bilaspur, Chhattisgarh 495004',
+    contactPhone: '+91 98765 43210'
+  });
+
+  const [activeAdminTab, setActiveAdminTab] = useState('bookings'); // 'bookings' | 'content' | 'gallery'
+
+  // ==========================================
+  // SECTION 3: APPOINTMENTS & ADMIN DATABASE
+  // ==========================================
+  const [bookingsList, setBookingsList] = useState([
+    {
+      ref: 'ATH-482910',
+      name: 'Rohan Deshmukh',
+      phone: '+91 98201 44321',
+      email: 'rohan.d@gmail.com',
+      doctor: 'Dr. Suman Kesharwani',
+      department: 'Skincare',
+      date: '2026-09-03',
+      time: '10:00 AM - 12:00 PM',
+      notes: 'Acne scar treatment inquiry and skin assessment.',
+      status: 'Confirmed'
+    },
+  ]);
+  const [statusFilter, setStatusFilter] = useState('All');
+
+  // ==========================================
+  // SECTION 4: SERVICES & DOCTORS DATA
+  // ==========================================
+  const departments = [
+    { id: 'skincare', name: 'Skin Care' },
+    { id: 'haircare', name: 'Hair Care' },
+    { id: 'panchkarma', name: 'Panchkarma Detox' }
+  ];
+
+  const services = [
+    {
+      id: 'skin-glow',
+      title: 'Advanced Clinical Skincare',
+      category: 'skincare',
+      icon: Sparkles,
+      description: 'Customized clinical treatments for acne, hyperpigmentation, chemical peels, hydra-facials, and anti-aging care.',
+      features: ['Acne & Scar Laser Revision', 'Customized Chemical Peels & HydraFacial', 'Pigmentation & Melasma Control', 'Collagen Boost & Anti-Aging Care']
+    },
+    {
+      id: 'hair-regrowth',
+      title: 'Hair Restoration & Trichology',
+      category: 'haircare',
+      icon: Feather,
+      description: 'Comprehensive hair loss diagnostics, PRP therapy, scalp detox, dandruff management, and hair density treatments.',
+      features: ['PRP & GFC Hair Growth Therapy', 'Hair Loss & Alopecia Management', 'Scalp Detox & Anti-Dandruff Therapy', 'Root Strengthening & Hair Serums']
+    },
+    {
+      id: 'panchkarma-detox',
+      title: 'Authentic Panchkarma Therapies',
+      category: 'panchkarma',
+      icon: Leaf,
+      description: 'Traditional 5-fold Ayurvedic detoxification, Shirodhara, Abhyanga, Nasyam, and holistic body rejuvenation therapies.',
+      features: ['Vamana & Virechana Deep Detox', 'Shirodhara Mind & Stress Relief', 'Abhyanga Herbal Body Massage', 'Janu & Kati Basti for Spine/Joint Care']
+    },
+    {
+      id: 'skin-antiaging',
+      title: 'Aesthetic & Anti-Aging Care',
+      category: 'skincare',
+      icon: Sun,
+      description: 'Non-invasive collagen boosters, wrinkle reductions, skin tightening, and glow restoration by expert cosmetologists.',
+      features: ['Botox & Dermal Filler Consultations', 'RF Skin Tightening & Lift', 'Dark Circle & Under-Eye Rejuvenation', 'Sun Damage Repair & Brightening']
+    },
+    {
+      id: 'hair-transplant-prep',
+      title: 'Scalp & Root Stimulation',
+      category: 'haircare',
+      icon: Activity,
+      description: 'Nutritional scalp revitalizing serums, laser hair stimulation, and hair root strengthening solutions.',
+      features: ['Micro-Needling Scalp Stimulation', 'Low-Level Laser Hair Therapy (LLLT)', 'Custom Botanical Scalp Tonics', 'Post-Hair Transplant Scalp Care']
+    },
+    {
+      id: 'ayurvedic-wellness',
+      title: 'Prakriti & Holistic Rejuvenation',
+      category: 'panchkarma',
+      icon: Droplet,
+      description: 'Personalized Prakriti (Vata-Pitta-Kapha) constitution analysis, Ayurvedic diet planning, and wellness packages.',
+      features: ['Prakriti Assessment (Tridosha Analysis)', 'Personalized Ayurvedic Diet & Lifestyle', 'Immunity & Anti-Stress Therapy', 'Chronic Pain & Metabolic Detox']
+    }
+  ];
+
+  const doctors = [
+    {
+      id: 'dr-suman-kesharwani',
+      name: 'Dr. Suman Kesharwani',
+      degree: 'BAMS ( Cosmetology Trichology & Panchkarma Specialist)',
+      role: 'Chief Medical Director & Lead Specialist',
+      exp: '6+ Years Experience',
+      dept: 'Skin Care, Hair Care & Panchkarma',
+      img: 'https://images.unsplash.com/photo-1594824813566-82823d293f45?auto=format&fit=crop&q=80&w=400',
+      timing: 'Mon - Sat: 09:00 AM - 08:00 PM'
+    }
+  ];
+
+  // ==========================================
+  // SECTION 5: GEMINI AI ADVISOR & TTS LOGIC
+  // ==========================================
+  const [aiCategory, setAiCategory] = useState('Skincare');
+  const [aiConcern, setAiConcern] = useState('');
+  const [aiSkinType, setAiSkinType] = useState('Combination Skin');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResult, setAiResult] = useState(null);
+  const [aiError, setAiError] = useState('');
+  
+  const [ttsLoading, setTtsLoading] = useState(false);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const audioRef = useRef(null);
+
+  // ==========================================
+  // SECTION 6: CLINIC FORM & CONTACT STATES
+  // ==========================================
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    doctor: 'Dr. Suman Kesharwani',
+    department: 'Skincare',
+    date: '',
+    time: '10:00 AM - 12:00 PM',
+    notes: ''
+  });
+  const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [openFaq, setOpenFaq] = useState(null);
+
+  // ==========================================
+  // SECTION 7: AUTHENTICATION & UPLOAD HANDLERS
+  // ==========================================
+  const handleAdminLoginSubmit = (e) => {
+    e.preventDefault();
+    if (adminPinInput === adminPin) {
+      setIsAdminAuthenticated(true);
+      setIsAdminLoginOpen(false);
+      setIsDashboardOpen(true);
+      setAdminPinInput('');
+      setAdminError('');
+    } else {
+      setAdminError('Invalid Admin PIN. Please enter correct owner PIN.');
+    }
+  };
+
+  const handlePinChangeSubmit = (e) => {
+    e.preventDefault();
+    setPinChangeSuccess('');
+    if (!newPinInput || newPinInput.length < 4) {
+      setAdminError('New PIN must be at least 4 characters.');
+      return;
+    }
+    if (newPinInput !== confirmPinInput) {
+      setAdminError('New PIN and confirmation do not match.');
+      return;
+    }
+    setAdminPin(newPinInput);
+    setNewPinInput('');
+    setConfirmPinInput('');
+    setAdminError('');
+    setPinChangeSuccess('Admin PIN successfully updated!');
+  };
+
+  const handleOpenAppointmentsClick = () => {
+    if (isAdminAuthenticated) {
+      setIsDashboardOpen(true);
+    } else {
+      setIsAdminLoginOpen(true);
+    }
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminAuthenticated(false);
+    setIsDashboardOpen(false);
+  };
+
+  const handleUploadPhotoSubmit = (e) => {
+    e.preventDefault();
+    const newGalleryItem = {
+      id: Date.now(),
+      title: uploadTitle || 'New Treatment Photo',
+      category: uploadCategory,
+      positions: uploadPosition.includes('Hero') ? ['Hero Slider', 'Gallery'] : ['Gallery'],
+      img: uploadImageFile ? URL.createObjectURL(uploadImageFile) : 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=600',
+      desc: uploadDesc || 'Clinical session under Dr. Suman Kesharwani'
+    };
+    setGalleryItems(prev => [newGalleryItem, ...prev]);
+    setIsUploadModalOpen(false);
+    // Reset upload form
+    setUploadTitle('');
+    setUploadDesc('');
+    setUploadImageFile(null);
+  };
+
+  // Gemini API with Exponential Backoff
+  const callGeminiApi = async (url, payload) => {
+    const apiKey = "";
+    const fullUrl = `${url}?key=${apiKey}`;
+    const delays = [1000, 2000, 4000, 8000, 16000];
+    
+    for (let attempt = 0; attempt <= 5; attempt++) {
+      try {
+        const response = await fetch(fullUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+        return await response.json();
+      } catch (err) {
+        if (attempt === 5) throw err;
+        await new Promise(r => setTimeout(r, delays[attempt]));
+      }
+    }
+  };
+
+  const pcmToWavBlob = (pcmData, sampleRate = 24000) => {
+    const numChannels = 1;
+    const bitsPerSample = 16;
+    const byteRate = (sampleRate * numChannels * bitsPerSample) / 8;
+    const blockAlign = (numChannels * bitsPerSample) / 8;
+    const dataSize = pcmData.length;
+    const buffer = new ArrayBuffer(44 + dataSize);
+    const view = new DataView(buffer);
+
+    const writeString = (v, offset, str) => {
+      for (let i = 0; i < str.length; i++) {
+        v.setUint8(offset + i, str.charCodeAt(i));
+      }
+    };
+
+    writeString(view, 0, 'RIFF');
+    view.setUint32(4, 36 + dataSize, true);
+    writeString(view, 8, 'WAVE');
+    writeString(view, 12, 'fmt ');
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, numChannels, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, byteRate, true);
+    view.setUint16(32, blockAlign, true);
+    view.setUint16(34, bitsPerSample, true);
+    writeString(view, 36, 'data');
+    view.setUint32(40, dataSize, true);
+
+    const pcmBytes = new Uint8Array(buffer, 44);
+    pcmBytes.set(pcmData);
+    return new Blob([buffer], { type: 'audio/wav' });
+  };
+
+  const handleAiAnalyze = async (e) => {
+    e.preventDefault();
+    if (!aiConcern.trim()) return;
+
+    setAiLoading(true);
+    setAiError('');
+    setAiResult(null);
+    setIsPlayingAudio(false);
+    if (audioRef.current) audioRef.current.pause();
+
+    const systemPrompt = `You are the chief AI Health & Wellness Advisor for Atharv Clinic (specializing in Skincare, Hair Care & Ayurvedic Panchkarma under Chief Specialist Dr. Suman Kesharwani). 
+Your task is to provide a polite, professional, and encouraging preliminary assessment based on the user's input.
+Always remind the user that this is an AI advisory and they should consult Dr. Suman Kesharwani at Atharv Clinic for precise diagnosis.
+
+Respond strictly in valid JSON format matching this structure:
+{
+  "summary": "Brief 2-line clinical observation",
+  "rootCause": "Likely contributing factors (e.g., Vata imbalance, hormonal factors, scalp sebum, UV damage)",
+  "dailyTips": ["Tip 1", "Tip 2", "Tip 3"],
+  "recommendedTreatments": ["Treatment 1", "Treatment 2"],
+  "dietaryAdvice": "Ayurvedic diet or skincare nutrition tip",
+  "speechText": "A warm, 3-sentence spoken summary suitable for text-to-speech."
+}`;
+
+    const userQuery = `Category: ${aiCategory}\nPrimary Concern: ${aiConcern}\nSkin/Scalp Type: ${aiSkinType}\n\nPlease generate clinical AI recommendations and routine guidance.`;
+
+    try {
+      const data = await callGeminiApi(
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent',
+        {
+          contents: [{ parts: [{ text: userQuery }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: { responseMimeType: 'application/json' }
+        }
+      );
+
+      const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (responseText) {
+        setAiResult(JSON.parse(responseText));
+      } else {
+        throw new Error("Invalid response format from Gemini.");
+      }
+    } catch (err) {
+      console.error("Gemini API Error:", err);
+      setAiError("We couldn't process your analysis right now. Please try again or book a direct doctor consultation.");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const handleGenerateSpeech = async () => {
+    if (!aiResult || !aiResult.speechText) return;
+    
+    if (isPlayingAudio && audioRef.current) {
+      audioRef.current.pause();
+      setIsPlayingAudio(false);
+      return;
+    }
+
+    setTtsLoading(true);
+    try {
+      const data = await callGeminiApi(
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent',
+        {
+          contents: [{ parts: [{ text: `Say warmly and clearly: Hello from Atharv Clinic. ${aiResult.speechText}` }] }],
+          generationConfig: {
+            responseModalities: ["AUDIO"],
+            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } } }
+          },
+          model: "gemini-2.5-flash-preview-tts"
+        }
+      );
+
+      const base64Audio = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+      const mimeType = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.mimeType || "";
+
+      if (base64Audio) {
+        let sampleRate = 24000;
+        const rateMatch = mimeType.match(/rate=(\d+)/);
+        if (rateMatch) sampleRate = parseInt(rateMatch[1], 10);
+
+        const binaryString = atob(base64Audio);
+        const len = binaryString.length;
+        const pcmBytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) pcmBytes[i] = binaryString.charCodeAt(i);
+
+        const wavBlob = pcmToWavBlob(pcmBytes, sampleRate);
+        const audioUrl = URL.createObjectURL(wavBlob);
+        
+        if (audioRef.current) {
+          audioRef.current.src = audioUrl;
+          audioRef.current.play();
+          setIsPlayingAudio(true);
+          audioRef.current.onended = () => setIsPlayingAudio(false);
+        }
+      }
+    } catch (err) {
+      console.error("Gemini TTS Error:", err);
+      setAiError("Could not play audio guidance at this moment.");
+    } finally {
+      setTtsLoading(false);
+    }
+  };
+
+  const handleBookFromAi = () => {
+    let dept = 'Skincare';
+    if (aiCategory === 'Hair Care') dept = 'Hair Care';
+    else if (aiCategory === 'Panchkarma') dept = 'Panchkarma Detox';
+
+    setFormData(prev => ({
+      ...prev,
+      department: dept,
+      doctor: 'Dr. Suman Kesharwani',
+      notes: `AI Assessment Note: ${aiResult?.summary || ''} (Concern: ${aiConcern})`
+    }));
+    setIsBookingOpen(true);
+  };
+
+  const handleBookingSubmit = (e) => {
+    e.preventDefault();
+    const ref = 'ATH-' + Math.floor(100000 + Math.random() * 900000);
+    setBookingRef(ref);
+
+    const newBooking = {
+      ref,
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email || 'N/A',
+      doctor: formData.doctor,
+      department: formData.department,
+      date: formData.date || 'To be confirmed',
+      time: formData.time,
+      notes: formData.notes || 'None',
+      status: 'Pending'
+    };
+
+    setBookingsList(prev => [newBooking, ...prev]);
+    setBookingSuccess(true);
+  };
+
+  const deleteBooking = (refId) => {
+    setBookingsList(prev => prev.filter(b => b.ref !== refId));
+  };
+
+  const resetBookingForm = () => {
+    setBookingSuccess(false);
+    setIsBookingOpen(false);
+    setFormData({
+      name: '',
+      phone: '',
+      email: '',
+      doctor: 'Dr. Suman Kesharwani',
+      department: 'Skincare',
+      date: '',
+      time: '10:00 AM - 12:00 PM',
+      notes: ''
+    });
+  };
+
+  const openBookingForDoc = (docName, dept) => {
+    setFormData(prev => ({ ...prev, doctor: docName, department: dept }));
+    setIsBookingOpen(true);
+  };
+
+  const heroSliderItems = galleryItems.filter(item => item.positions && item.positions.includes('Hero Slider'));
+  const filteredGallery = galleryCategoryFilter === 'All' ? galleryItems : galleryItems.filter(i => i.category === galleryCategoryFilter);
+  const filteredServices = selectedDept === 'All' ? services : services.filter(s => s.category === selectedDept);
+  const filteredBookings = bookingsList;
+
+  const highlightsList = [
+    { category: 'Skincare', icon: Sparkles, color: 'bg-emerald-600', points: ['Advanced Laser & Pigmentation Therapies', 'Custom Medi-Facials & Chemical Peels', 'Safe Acne & Scar Revision Treatments', 'Anti-Aging Collagen Boost Solutions'] },
+    { category: 'Hair Care', icon: Feather, color: 'bg-emerald-700', points: ['PRP & Growth Factor (GFC) Therapy', 'Hair Loss & Alopecia Management', 'Scalp Detox & Dandruff Elimination', 'Follicle Root Stimulation'] },
+    { category: 'Panchkarma', icon: Leaf, color: 'bg-green-700', points: ['Authentic 5-Stage Body Detox (Panchkarma)', 'Shirodhara for Stress & Sleep Disorders', 'Ayurvedic Prakriti (Tridosha) Assessment', 'Herbal Oil Therapies for Joint & Spine Health'] }
+  ];
+
+  const testimonials = [
+    { quote: "Under Dr. Suman Kesharwani's guidance, my Panchkarma Shirodhara therapy gave me immense stress relief. Truly exceptional expertise!", author: "Rajesh K.", role: "Panchkarma Patient", rating: 5 },
+    { quote: "I took 4 sessions of PRP hair therapy with Dr. Suman Kesharwani. The density improvement in my hair within 3 months is amazing!", author: "Priya Sundaram", role: "Hair Care Patient", rating: 5 },
+    { quote: "Dr. Suman Kesharwani's acne treatment and skin peels worked wonders for my skin tone. Highly recommended clinic!", author: "Siddharth Verma", role: "Skincare Patient", rating: 5 }
+  ];
+
+  const faqs = [
+    { q: "What is Panchkarma and how does it work?", a: "Panchkarma is an authentic 5-fold Ayurvedic cleansing process (Vamana, Virechana, Basti, Nasyam, Raktamokshana) performed under Dr. Suman Kesharwani to eliminate deep-seated toxins (Ama) and restore internal immunity." },
+    { q: "Are clinical skincare treatments safe for sensitive skin?", a: "Yes! Every treatment begins with a thorough skin analysis by Dr. Suman Kesharwani to customize chemical peels, hydra-facials, and laser settings suitable for your unique skin type." },
+    { q: "How many sessions of Hair PRP therapy are recommended?", a: "Most patients notice reduced hair fall and increased density after 3 to 4 sessions, usually spaced 3-4 weeks apart alongside customized hair nutrition serums." },
+    { q: "Can I combine Skincare treatments with Panchkarma therapies?", a: "Yes! Combining internal Ayurvedic detoxification (Panchkarma) with modern aesthetic skincare treatments leads to faster, longer-lasting radiance and healthy skin." }
+  ];
+
+  return (
+    <div className="min-h-screen bg-emerald-50/20 text-slate-800 font-sans">
+      <audio ref={audioRef} className="hidden" />
+
+      {/* ANNOUNCEMENT BAR & TOP HEADER */}
+      <div className="bg-emerald-950 text-emerald-100 text-xs sm:text-sm py-2 px-4 font-medium">
+        <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1">
+              <Phone className="w-3.5 h-3.5 text-emerald-400" />
+              Helpdesk & Appointments: <strong className="text-white">+91 98765 43210</strong>
+            </span>
+            <span className="hidden md:inline-block text-emerald-800">|</span>
+            <span className="hidden md:flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5 text-emerald-400" />
+              Mon - Sat: 9:00 AM - 8:00 PM
+            </span>
+          </div>
+          <div className="flex items-center gap-3 ml-auto sm:ml-0">
+            <button
+              onClick={handleOpenAppointmentsClick}
+              className="inline-flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm transition-colors"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              {isAdminAuthenticated ? 'Admin Dashboard (Logged In)' : 'Doctor/Owner Login'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* NAVIGATION BAR */}
+      <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          <a href="#home" onClick={() => setCurrentPage('home')} className="flex items-center gap-3 group">
+            <div className="w-11 h-11 bg-gradient-to-tr from-emerald-700 to-green-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-emerald-700/20 group-hover:scale-105 transition-transform">
+              <Leaf className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 block leading-tight">
+                ATHARV <span className="text-emerald-700">CLINIC</span>
+              </span>
+              <span className="text-xs text-emerald-800 font-bold tracking-tight block">
+                Skincare, Hair Care & Panchkarma
+              </span>
+            </div>
+          </a>
+
+          {/* Desktop Links */}
+          <div className="hidden lg:flex items-center gap-8 font-medium text-slate-600 text-sm">
+            <button onClick={() => setCurrentPage('home')} className={`transition-colors ${currentPage === 'home' ? 'text-emerald-700 font-bold' : 'hover:text-emerald-700'}`}>Home</button>
+            <a href="#ai-advisor" onClick={() => setCurrentPage('home')} className="hover:text-emerald-700 transition-colors font-bold text-emerald-700 flex items-center gap-1">AI Advisor</a>
+            <button onClick={() => setCurrentPage('gallery')} className={`transition-colors ${currentPage === 'gallery' ? 'text-emerald-700 font-bold' : 'hover:text-emerald-700'}`}>Treatment Gallery</button>
+            <a href="#services" onClick={() => setCurrentPage('home')} className="hover:text-emerald-700 transition-colors">Treatments</a>
+            <a href="#specialties-pointers" onClick={() => setCurrentPage('home')} className="hover:text-emerald-700 transition-colors">Specialties</a>
+            <a href="#doctors" onClick={() => setCurrentPage('home')} className="hover:text-emerald-700 transition-colors">Doctor Profile</a>
+            <a href="#contact" onClick={() => setCurrentPage('home')} className="hover:text-emerald-700 transition-colors">Contact</a>
+          </div>
+
+          <div className="hidden sm:flex items-center gap-3">
+            <button onClick={handleOpenAppointmentsClick} className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 transition-colors flex items-center gap-1.5">
+              <Lock className="w-3.5 h-3.5 text-emerald-700" /> Doctor Portal
+            </button>
+            <button onClick={() => setIsBookingOpen(true)} className="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-md shadow-emerald-700/20 transition-all flex items-center gap-2">
+              <Calendar className="w-4 h-4" /> Book Appointment
+            </button>
+          </div>
+
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100">
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-white border-b border-emerald-100 px-4 pt-3 pb-6 space-y-3">
+            <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); }} className="block w-full text-left py-2 text-slate-700 font-medium">Home</button>
+            <button onClick={() => { setCurrentPage('gallery'); setMobileMenuOpen(false); }} className="block w-full text-left py-2 text-emerald-700 font-bold">📸 Treatment Gallery Page</button>
+            <button onClick={() => { setMobileMenuOpen(false); handleOpenAppointmentsClick(); }} className="w-full bg-slate-900 text-white font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs">
+              <Lock className="w-3.5 h-3.5 text-emerald-400" /> Doctor / Owner Login
+            </button>
+            <button onClick={() => { setMobileMenuOpen(false); setIsBookingOpen(true); }} className="w-full bg-emerald-700 text-white font-semibold py-3 rounded-xl shadow-md flex items-center justify-center gap-2">
+              <Calendar className="w-4 h-4" /> Book Appointment
+            </button>
+          </div>
+        )}
+      </nav>
+
+      {/* ROUTER VIEWS (HOME VS GALLERY) */}
+      {currentPage === 'home' ? (
+        <>
+          {/* HERO SECTION WITH INFINITE SLIDER */}
+          <section id="home" className="relative bg-gradient-to-b from-emerald-100/60 via-green-50/40 to-white pt-12 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="grid lg:grid-cols-12 gap-12 items-center">
+              <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-900 text-xs sm:text-sm font-semibold border border-emerald-200">
+                  <Leaf className="w-4 h-4 text-emerald-700" />
+                  {siteContent.heroBadge}
+                </div>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                  {siteContent.heroTitleMain} <span className="text-emerald-700 underline decoration-green-300 decoration-wavy decoration-2">{siteContent.heroTitleHighlight}</span>
+                </h1>
+                <p className="text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                  {siteContent.heroSubtitle}
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                    <button onClick={() => setIsBookingOpen(true)} className="w-full sm:w-auto bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg shadow-emerald-700/30 transition-all flex items-center justify-center gap-3">
+                      <Calendar className="w-5 h-5" /> Book Instant Appointment
+                    </button>
+                    <button onClick={() => setCurrentPage('gallery')} className="w-full sm:w-auto bg-white hover:bg-emerald-50 text-emerald-800 font-bold text-base px-6 py-4 rounded-xl border border-emerald-300 transition-all flex items-center justify-center gap-2 shadow-sm">
+                      <ImageIcon className="w-5 h-5 text-emerald-700" /> View Treatment Gallery Page
+                    </button>
+                  </div>
+                </div>
+
+                {/* Hero Visual Card (Right-to-Left Marquee Slider) */}
+                <div className="lg:col-span-5 relative">
+                  <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900 h-96 group">
+                    <div className="absolute inset-0 flex items-center animate-marquee space-x-4 px-4">
+                      {[...heroSliderItems, ...heroSliderItems].map((item, idx) => (
+                        <div key={idx} className="w-80 h-80 flex-shrink-0 relative rounded-2xl overflow-hidden shadow-lg border border-white/20 bg-slate-800">
+                          <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex flex-col justify-end p-4 text-white">
+                            <span className="bg-emerald-700 text-[10px] font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wider w-max mb-1">
+                              {item.category}
+                            </span>
+                            <h4 className="font-bold text-sm leading-snug">{item.title}</h4>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="absolute top-4 left-4 z-20 bg-slate-950/80 backdrop-blur-md text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-xl border border-emerald-500/30 flex items-center gap-1.5 shadow-md">
+                      <Leaf className="w-3.5 h-3.5 text-emerald-400" /> Dr. Suman Kesharwani Care
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <style>{`
+            @keyframes marquee {
+              0% { transform: translateX(0%); }
+              100% { transform: translateX(-50%); }
+            }
+            .animate-marquee {
+              display: flex;
+              width: max-content;
+              animation: marquee 25s linear infinite;
+            }
+            .animate-marquee:hover {
+              animation-play-state: paused;
+            }
+          `}</style>
+
+          {/* GEMINI AI HEALTH ADVISOR */}
+          <section id="ai-advisor" className="py-16 bg-gradient-to-r from-emerald-800 via-green-700 to-emerald-700 text-white relative overflow-hidden shadow-xl">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+              <div className="text-center max-w-3xl mx-auto mb-10">
+                <span className="bg-white/20 text-white text-xs font-bold px-3.5 py-1.5 rounded-full inline-flex items-center gap-1.5 backdrop-blur-md mb-3 border border-white/30">
+                  <Sparkles className="w-4 h-4 text-emerald-200" /> Powered by Gemini AI Intelligence
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold">{siteContent.aiSectionTitle}</h2>
+                <p className="text-emerald-100 text-sm sm:text-base mt-2">
+                  {siteContent.aiSectionDesc}
+                </p>
+              </div>
+
+              <div className="bg-white text-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl border border-emerald-200/50 max-w-4xl mx-auto">
+                <form onSubmit={handleAiAnalyze} className="space-y-6">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Specialty Category</label>
+                      <select value={aiCategory} onChange={(e) => setAiCategory(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none bg-slate-50 text-sm font-semibold">
+                        <option value="Skincare">Skincare & Glow</option>
+                        <option value="Hair Care">Hair Care & Scalp Density</option>
+                        <option value="Panchkarma">Panchkarma & Body Detox</option>
+                        <option value="Combined Wellness">Combined Skin & Panchkarma Detox</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Skin / Scalp Type</label>
+                      <select value={aiSkinType} onChange={(e) => setAiSkinType(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none bg-slate-50 text-sm font-semibold">
+                        <option value="Combination Skin">Combination Skin</option>
+                        <option value="Oily & Acne-Prone">Oily & Acne-Prone</option>
+                        <option value="Dry & Sensitive Skin">Dry & Sensitive Skin</option>
+                        <option value="Thinning Hair & Oily Scalp">Thinning Hair & Oily Scalp</option>
+                        <option value="Dry Scalp with Dandruff">Dry Scalp with Dandruff</option>
+                        <option value="Sensitive & Pigmented Skin">Sensitive & Pigmented Skin</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Describe Your Health / Beauty Concern *</label>
+                    <textarea rows={3} required value={aiConcern} onChange={(e) => setAiConcern(e.target.value)} placeholder="e.g. Having severe acne breakouts on cheeks, dark spots after acne, or heavy hair fall with stress..." className="w-full px-4 py-3 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none"></textarea>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                    <p className="text-xs text-slate-500 flex items-center gap-1">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" /> Your information is processed securely for preliminary advice.
+                    </p>
+                    <button type="submit" disabled={aiLoading || !aiConcern.trim()} className="w-full sm:w-auto bg-emerald-700 hover:bg-emerald-800 disabled:bg-slate-300 text-white font-bold text-sm px-8 py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                      {aiLoading ? <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing with Gemini AI...</> : <><Wand2 className="w-4 h-4" /> ✨ Analyze & Get AI Advice</>}
+                    </button>
+                  </div>
+                </form>
+
+                {aiError && (
+                  <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" /> <span>{aiError}</span>
+                  </div>
+                )}
+
+                {aiResult && (
+                  <div className="mt-8 pt-8 border-t border-slate-200 space-y-6 animate-fadeIn">
+                    <div className="flex flex-wrap items-center justify-between gap-4 bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-emerald-700 text-white rounded-xl flex items-center justify-center font-bold"><Bot className="w-6 h-6" /></div>
+                        <div>
+                          <h4 className="font-extrabold text-slate-900 text-base">Gemini Clinical Assessment</h4>
+                          <p className="text-xs text-emerald-700 font-medium">Personalized for Atharv Clinic Specialty</p>
+                        </div>
+                      </div>
+                      <button onClick={handleGenerateSpeech} disabled={ttsLoading} className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center gap-2 transition-colors">
+                        {ttsLoading ? <><Loader2 className="w-4 h-4 animate-spin text-emerald-400" /> Generating Speech...</> : isPlayingAudio ? <><VolumeX className="w-4 h-4 text-emerald-400" /> Pause Speech</> : <><Volume2 className="w-4 h-4 text-emerald-400" /> ✨ Listen to AI Advice (Voice)</>}
+                      </button>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                          <h5 className="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1">Clinical Summary</h5>
+                          <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">{aiResult.summary}</p>
+                        </div>
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                          <h5 className="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1">Likely Factors / Tridosha Root Cause</h5>
+                          <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{aiResult.rootCause}</p>
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                          <h5 className="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">Recommended Daily Care Tips</h5>
+                          <ul className="space-y-1.5">
+                            {aiResult.dailyTips?.map((tip, idx) => (
+                              <li key={idx} className="flex items-start gap-2 text-xs text-slate-700">
+                                <CheckCircle className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" /> <span>{tip}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="bg-emerald-50/60 p-4 rounded-xl border border-emerald-200">
+                          <h5 className="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-2">Suggested Atharv Clinic Treatments</h5>
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {aiResult.recommendedTreatments?.map((treatment, idx) => (
+                              <span key={idx} className="bg-white text-emerald-800 border border-emerald-200 text-xs font-bold px-2.5 py-1 rounded-lg">{treatment}</span>
+                            ))}
+                          </div>
+                          <button onClick={handleBookFromAi} className="w-full mt-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs py-2.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5">
+                            <Calendar className="w-4 h-4" /> ✨ Book Suggested Treatment
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* SPECIALTY HIGHLIGHTS */}
+          <section id="specialties-pointers" className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-12">
+              <span className="text-xs font-bold text-emerald-700 tracking-wider uppercase">Key Medical Focus</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-1">{siteContent.specialtiesHeader}</h2>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8">
+              {highlightsList.map((highlight, idx) => {
+                const IconComp = highlight.icon;
+                return (
+                  <div key={idx} className="bg-white rounded-2xl p-6 border border-emerald-100 shadow-md hover:shadow-lg transition-shadow">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className={`w-12 h-12 rounded-xl ${highlight.color} text-white flex items-center justify-center shadow-md`}><IconComp className="w-6 h-6" /></div>
+                      <h3 className="text-xl font-bold text-slate-900">{highlight.category}</h3>
+                    </div>
+                    <ul className="space-y-3">
+                      {highlight.points.map((pt, pIdx) => (
+                        <li key={pIdx} className="flex items-start gap-3 text-xs sm:text-sm text-slate-700 font-medium">
+                          <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5"><Check className="w-3.5 h-3.5 stroke-[3]" /></div>
+                          <span>{pt}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* TREATMENTS / SERVICES SECTION */}
+          <section id="services" className="py-16 bg-white border-t border-emerald-100">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center max-w-3xl mx-auto mb-12">
+                <h2 className="text-xs font-bold text-emerald-700 tracking-wider uppercase mb-2">Comprehensive Treatments</h2>
+                <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Skincare, Hair Care & Panchkarma</h3>
+                <div className="flex flex-wrap justify-center gap-2 mt-8">
+                  {departments.map((dept) => (
+                    <button key={dept.id} onClick={() => setSelectedDept(dept.id)} className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${selectedDept === dept.id ? 'bg-emerald-700 text-white shadow-md shadow-emerald-700/30' : 'bg-white text-slate-600 border border-slate-200 hover:bg-emerald-50'}`}>
+                      {dept.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredServices.map((service) => {
+                  const IconComp = service.icon;
+                  return (
+                    <div key={service.id} className="bg-slate-50/50 rounded-2xl p-6 border border-emerald-100 shadow-sm hover:shadow-xl transition-all hover:-translate-y-1 flex flex-col justify-between">
+                      <div>
+                        <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-5"><IconComp className="w-6 h-6" /></div>
+                        <h4 className="text-xl font-bold text-slate-900 mb-2">{service.title}</h4>
+                        <p className="text-sm text-slate-600 leading-relaxed mb-6">{service.description}</p>
+                        <ul className="space-y-2.5 mb-6">
+                          {service.features.map((feat, idx) => (
+                            <li key={idx} className="flex items-center gap-2 text-xs font-medium text-slate-700">
+                              <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" /> {feat}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <button onClick={() => setIsBookingOpen(true)} className="w-full py-2.5 px-4 bg-white hover:bg-emerald-50 text-emerald-800 font-semibold text-sm rounded-xl border border-emerald-200 transition-colors flex items-center justify-center gap-2 group shadow-sm">
+                        Book Consultation <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* DOCTOR PROFILE */}
+          <section id="doctors" className="py-20 bg-emerald-700/5 border-y border-emerald-700/10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center max-w-2xl mx-auto mb-14">
+                <h2 className="text-xs font-bold text-emerald-700 tracking-wider uppercase mb-2">Lead Specialist</h2>
+                <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900">{siteContent.doctorsHeader}</h3>
+              </div>
+              <div className="max-w-md mx-auto">
+                {doctors.map((doc) => (
+                  <div key={doc.id} className="bg-white rounded-2xl overflow-hidden shadow-xl border border-emerald-100 flex flex-col">
+                    <div className="h-72 overflow-hidden relative bg-slate-100">
+                      <img src={doc.img} alt={doc.name} className="w-full h-full object-cover object-top" />
+                      <div className="absolute top-4 right-4 bg-emerald-700 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">Chief Doctor</div>
+                    </div>
+                    <div className="p-6 flex-1 flex flex-col justify-between">
+                      <div>
+                        <h4 className="text-2xl font-extrabold text-slate-900">{doc.name}</h4>
+                        <p className="text-xs text-emerald-700 font-semibold mt-1">{doc.degree}</p>
+                        <p className="text-xs text-slate-500 font-medium mt-1">{doc.role}</p>
+                        <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5 text-xs text-slate-600">
+                          <div className="flex items-center gap-2"><Award className="w-4 h-4 text-emerald-700" /><span>{doc.exp}</span></div>
+                          <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-emerald-700" /><span>{doc.timing}</span></div>
+                        </div>
+                      </div>
+                      <button onClick={() => openBookingForDoc(doc.name, 'Skincare')} className="w-full mt-6 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-sm rounded-xl transition-colors shadow-md flex items-center justify-center gap-2">
+                        <Calendar className="w-4 h-4" /> Book Consultation with Dr. Suman
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* TESTIMONIALS */}
+          <section id="testimonials" className="py-20 bg-slate-900 text-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center max-w-2xl mx-auto mb-14">
+                <span className="text-xs font-bold text-emerald-400 tracking-wider uppercase">Patient Stories</span>
+                <h3 className="text-3xl sm:text-4xl font-extrabold mt-2">What Our Patients Say</h3>
+              </div>
+              <div className="grid md:grid-cols-3 gap-8">
+                {testimonials.map((t, idx) => (
+                  <div key={idx} className="bg-slate-800/80 p-6 rounded-2xl border border-slate-700/80 flex flex-col justify-between">
+                    <div>
+                      <div className="flex text-amber-400 gap-1 mb-4">
+                        {[...Array(t.rating)].map((_, i) => (<Star key={i} className="w-4 h-4 fill-amber-400" />))}
+                      </div>
+                      <p className="text-slate-300 text-sm leading-relaxed italic">"{t.quote}"</p>
+                    </div>
+                    <div className="mt-6 pt-4 border-t border-slate-700 flex items-center gap-3">
+                      <div className="w-9 h-9 bg-emerald-700 rounded-full flex items-center justify-center font-bold text-white text-sm">{t.author.charAt(0)}</div>
+                      <div><div className="font-bold text-sm">{t.author}</div><div className="text-xs text-slate-400">{t.role}</div></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* FAQ */}
+          <section className="py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-xs font-bold text-emerald-700 tracking-wider uppercase mb-2">Have Questions?</h2>
+              <h3 className="text-3xl font-extrabold text-slate-900">Frequently Asked Questions</h3>
+            </div>
+            <div className="space-y-4">
+              {faqs.map((faq, idx) => (
+                <div key={idx} className="bg-white rounded-xl border border-emerald-100 overflow-hidden shadow-sm">
+                  <button onClick={() => setOpenFaq(openFaq === idx ? null : idx)} className="w-full text-left p-5 font-bold text-slate-900 flex justify-between items-center gap-4 hover:bg-emerald-50/50 transition-colors">
+                    <span>{faq.q}</span>
+                    <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${openFaq === idx ? 'rotate-180 text-emerald-700' : ''}`} />
+                  </button>
+                  {openFaq === idx && <div className="px-5 pb-5 pt-1 text-sm text-slate-600 border-t border-slate-100 bg-slate-50/50">{faq.a}</div>}
+                </div>
+              ))}
+            </div>
+          </section>
+        </>
+      ) : (
+        /* ========================================== */
+        /* SEPARATE TREATMENT GALLERY PAGE           */
+        /* ========================================== */
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+            <button onClick={() => setCurrentPage('home')} className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-4 py-2.5 rounded-xl text-xs">
+              <ArrowLeft className="w-4 h-4 text-emerald-700" /> Back to Home
+            </button>
+            {isAdminAuthenticated && (
+              <button onClick={() => setIsUploadModalOpen(true)} className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-5 py-3 rounded-xl text-sm shadow-md">
+                <Plus className="w-4 h-4" /> Upload New Treatment Photo
+              </button>
+            )}
+          </div>
+
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="text-xs font-bold text-emerald-700 tracking-wider uppercase mb-1 flex items-center justify-center gap-1">
+              <ImageIcon className="w-4 h-4" /> Dedicated Page View
+            </span>
+            <h1 className="text-4xl font-extrabold text-slate-900">Atharv Clinic Treatment Gallery</h1>
+            <p className="text-slate-600 mt-2 text-sm">
+              Explore authentic photos and transformations of Skincare, Hair Care, and Panchkarma treatments performed by Dr. Suman Kesharwani.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mb-10 justify-center">
+            {galleryCategories.map((cat) => (
+              <button key={cat} onClick={() => setGalleryCategoryFilter(cat)} className={`px-5 py-2 rounded-full text-xs font-bold transition-all ${galleryCategoryFilter === cat ? 'bg-slate-900 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-emerald-50 border border-slate-200'}`}>
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredGallery.map((item) => (
+              <div key={item.id} className="bg-white rounded-2xl overflow-hidden border border-emerald-100 shadow-md hover:shadow-xl transition-all group">
+                <div className="h-64 overflow-hidden relative bg-slate-200">
+                  <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute top-3 left-3 bg-emerald-700 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md">{item.category}</div>
+                </div>
+                <div className="p-6">
+                  <h3 className="font-bold text-slate-900 text-lg mb-1">{item.title}</h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ========================================== */}
+      {/* SECTION 10: CONTACT & LOCATION MAP        */}
+      {/* ========================================== */}
+      <section id="contact" className="py-20 bg-emerald-50/40 border-t border-emerald-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-12">
+            <div className="lg:col-span-5 space-y-6">
+              <div>
+                <span className="text-xs font-bold text-emerald-700 tracking-wider uppercase">Reach Out</span>
+                <h3 className="text-3xl font-extrabold text-slate-900 mt-1">Get In Touch With Us</h3>
+              </div>
+              <div className="space-y-4 bg-white p-6 rounded-2xl border border-emerald-100 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <MapPin className="w-5 h-5 text-emerald-700 flex-shrink-0 mt-1" />
+                  <div>
+                    <strong className="block text-sm text-slate-900">Address:</strong>
+                    <span className="text-xs text-slate-600">{siteContent.contactAddress}</span>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <Phone className="w-5 h-5 text-emerald-700 flex-shrink-0 mt-1" />
+                  <div>
+                    <strong className="block text-sm text-slate-900">Phone:</strong>
+                    <span className="text-xs text-slate-600">{siteContent.contactPhone}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Google Map Link Card */}
+              <a href="https://www.google.com/maps/search/?api=1&query=22.072152921974496,82.1661586453846" target="_blank" rel="noopener noreferrer" className="bg-emerald-100/80 hover:bg-emerald-200/80 rounded-2xl h-48 overflow-hidden relative flex flex-col items-center justify-center text-slate-700 border border-emerald-300 transition-all p-4 text-center group shadow-sm">
+                <div className="w-12 h-12 bg-emerald-700 text-white rounded-full flex items-center justify-center mb-2 shadow-md group-hover:scale-110 transition-transform">
+                  <MapPin className="w-6 h-6 animate-bounce" />
+                </div>
+                <span className="font-bold text-sm block text-slate-900">Atharv Clinic Location Map</span>
+                <span className="text-xs text-slate-600 mt-0.5">Manu Chowk, Tikrapara, Bilaspur</span>
+                <span className="text-xs text-emerald-800 font-bold mt-2 inline-flex items-center gap-1 underline">Open in Google Maps <ExternalLink className="w-3.5 h-3.5" /></span>
+              </a>
+            </div>
+
+            <div className="lg:col-span-7 bg-white p-8 rounded-2xl border border-emerald-100 shadow-sm">
+              <h4 className="text-xl font-bold text-slate-900 mb-2">Send an Online Inquiry</h4>
+              {contactSubmitted ? (
+                <div className="bg-emerald-50 border border-emerald-200 p-6 rounded-xl text-center">
+                  <CheckCircle className="w-12 h-12 text-emerald-700 mx-auto mb-3" />
+                  <h5 className="font-bold text-emerald-900 text-lg">Thank You!</h5>
+                  <p className="text-xs text-emerald-700 mt-1">Your message has been received.</p>
+                  <button onClick={() => setContactSubmitted(false)} className="mt-4 text-xs font-semibold text-emerald-700 underline">Send another message</button>
+                </div>
+              ) : (
+                <form onSubmit={(e) => { e.preventDefault(); setContactSubmitted(true); }} className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Your Name</label>
+                      <input type="text" required placeholder="e.g. Anish Sharma" className="w-full px-4 py-2.5 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Phone Number</label>
+                      <input type="tel" required placeholder="e.g. +91 9876543210" className="w-full px-4 py-2.5 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Message</label>
+                    <textarea rows={4} required placeholder="Specify your inquiry..." className="w-full px-4 py-2.5 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none"></textarea>
+                  </div>
+                  <button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl transition-colors shadow-md text-sm">Submit Inquiry</button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================== */}
+      {/* SECTION 11: FOOTER                        */}
+      {/* ========================================== */}
+      <footer className="bg-slate-950 text-slate-400 py-12 border-t border-slate-800 text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="space-y-3 md:col-span-1">
+            <div className="flex items-center gap-2 text-white font-bold text-lg">
+              <Leaf className="w-5 h-5 text-emerald-500" /> <span>ATHARV CLINIC</span>
+            </div>
+            <p className="text-emerald-400 font-semibold text-xs">Dr. Suman Kesharwani • Skincare, Hair Care & Panchkarma</p>
+            <p className="text-slate-400 leading-relaxed">Ground floor, RG Empire, Below Bodyline fitness, Manu Chowk, Tikrapara, Bilaspur, Chhattisgarh 495004</p>
+          </div>
+          <div>
+            <h5 className="text-white font-bold text-sm mb-3">Quick Links</h5>
+            <ul className="space-y-2">
+              <li><button onClick={() => setCurrentPage('home')} className="hover:text-emerald-400 transition-colors">Home</button></li>
+              <li><button onClick={() => setCurrentPage('gallery')} className="hover:text-emerald-400 transition-colors">Treatment Gallery Page</button></li>
+              <li><a href="#services" className="hover:text-emerald-400 transition-colors">Treatments</a></li>
+              <li><a href="#doctors" className="hover:text-emerald-400 transition-colors">Doctor Profile</a></li>
+              <li><a href="#contact" className="hover:text-emerald-400 transition-colors">Contact Us</a></li>
+            </ul>
+          </div>
+          <div>
+            <h5 className="text-white font-bold text-sm mb-3">Specialties</h5>
+            <ul className="space-y-2">
+              <li>Advanced Skincare & Peels</li>
+              <li>Hair Loss & PRP Therapy</li>
+              <li>Ayurvedic Panchkarma Detox</li>
+              <li>Anti-Aging & Glow Care</li>
+              <li>Shirodhara & Stress Relief</li>
+            </ul>
+          </div>
+          <div>
+            <h5 className="text-white font-bold text-sm mb-3">Appointments & Helpline</h5>
+            <p className="mb-2">Call our reception:</p>
+            <a href="tel:+919876543210" className="text-emerald-400 font-bold text-base block hover:underline">+91 98765 43210</a>
+            <p className="mt-4 text-slate-500">© 2026 Atharv Clinic. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+
+      {/* ========================================== */}
+      {/* SECTION 12: MODALS (BOOKING & ADMIN)      */}
+      {/* ========================================== */}
+      {isAdminLoginOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 my-8">
+            <button onClick={() => setIsAdminLoginOpen(false)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100"><X className="w-5 h-5" /></button>
+            <div className="text-center mb-6">
+              <div className="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto mb-3"><Lock className="w-6 h-6" /></div>
+              <h3 className="text-xl font-bold text-slate-900">Doctor / Owner Authentication</h3>
+              <p className="text-xs text-slate-500 mt-1">Enter PIN (Default: 1234)</p>
+            </div>
+            <form onSubmit={handleAdminLoginSubmit} className="space-y-4">
+              <input type="password" required value={adminPinInput} onChange={(e) => setAdminPinInput(e.target.value)} placeholder="PIN: 1234" className="w-full px-4 py-2.5 text-center font-mono text-base tracking-widest border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" />
+              {pinError && <div className="text-xs text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200 text-center font-medium">{pinError}</div>}
+              <button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl shadow-md transition-colors text-sm flex items-center justify-center gap-2">
+                <KeyRound className="w-4 h-4 text-emerald-400" /> Unlock Doctor Portal
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* UPLOAD TREATMENT PHOTO MODAL (FROM SCREENSHOT) */}
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/85 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative border border-slate-200 my-8">
+            <button onClick={() => setIsUploadModalOpen(false)} className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100"><X className="w-5 h-5" /></button>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shadow-sm">
+                <Upload className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-extrabold text-slate-900">Upload Treatment Photo</h3>
+                <p className="text-xs text-slate-500">Configure photo category & display position</p>
+              </div>
+            </div>
+
+            <form onSubmit={handleUploadPhotoSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Treatment / Photo Title *</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={uploadTitle} 
+                  onChange={(e) => setUploadTitle(e.target.value)} 
+                  placeholder="e.g. Advanced Chemical Peel Session" 
+                  className="w-full px-4 py-3 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                />
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Category *</label>
+                  <select 
+                    value={uploadCategory} 
+                    onChange={(e) => setUploadCategory(e.target.value)} 
+                    className="w-full px-4 py-3 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none bg-white font-semibold"
+                  >
+                    <option value="Skincare">Skincare</option>
+                    <option value="Hair Care">Hair Care</option>
+                    <option value="Panchkarma">Panchkarma</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Display Position *</label>
+                  <select 
+                    value={uploadPosition} 
+                    onChange={(e) => setUploadPosition(e.target.value)} 
+                    className="w-full px-4 py-3 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none bg-white font-semibold"
+                  >
+                    <option value="Homepage Hero Slider & Gallery">Homepage Hero Slider & Gallery</option>
+                    <option value="Gallery Only">Gallery Only</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Select Image File from Device *</label>
+                <div className="p-4 border-2 border-dashed border-slate-300 rounded-2xl bg-slate-50 flex items-center justify-between gap-4">
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={(e) => setUploadImageFile(e.target.files?.[0] || null)}
+                    className="text-xs text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-700 file:text-white hover:file:bg-emerald-800" 
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Short Description</label>
+                <textarea 
+                  rows={3} 
+                  value={uploadDesc} 
+                  onChange={(e) => setUploadDesc(e.target.value)} 
+                  placeholder="Describe the treatment or procedure..." 
+                  className="w-full px-4 py-3 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none"
+                ></textarea>
+              </div>
+
+              <button 
+                type="submit" 
+                className="w-full mt-4 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-base"
+              >
+                <Plus className="w-5 h-5" /> Publish to Website
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {isDashboardOpen && isAdminAuthenticated && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/75 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl relative border border-slate-200 max-h-[90vh] flex flex-col my-8">
+            <button onClick={() => setIsDashboardOpen(false)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100"><X className="w-5 h-5" /></button>
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-bold shadow-md"><Sliders className="w-5 h-5" /></div>
+                <div>
+                  <h3 className="text-xl font-extrabold text-slate-900">Dr. Suman Kesharwani • Admin CMS Manager</h3>
+                  <p className="text-xs text-slate-500">Manage patient bookings, photos, and website text contents</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <button onClick={handleAdminLogout} className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2.5 rounded-xl border border-slate-300 flex items-center gap-1">
+                  <LogOut className="w-3.5 h-3.5 text-red-500" /> Lock Portal
+                </button>
+              </div>
+            </div>
+
+            {/* ADMIN TABS */}
+            <div className="flex flex-wrap gap-2 border-b border-slate-200 my-4 pb-2">
+              <button 
+                onClick={() => setActiveAdminTab('bookings')} 
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeAdminTab === 'bookings' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              >
+                📋 Patient Bookings ({bookingsList.length})
+              </button>
+              <button 
+                onClick={() => setActiveAdminTab('content')} 
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeAdminTab === 'content' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              >
+                ✏️ Edit Website Texts (CMS)
+              </button>
+              <button 
+                onClick={() => setActiveAdminTab('security')} 
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeAdminTab === 'security' ? 'bg-emerald-700 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              >
+                🔒 Security & PIN
+              </button>
+              <button 
+                onClick={() => setIsUploadModalOpen(true)} 
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-orange-600 hover:bg-orange-700 text-white flex items-center gap-1.5 shadow-sm"
+              >
+                <Upload className="w-3.5 h-3.5" /> Upload Treatment Photo
+              </button>
+            </div>
+
+            <div className="overflow-y-auto flex-1 my-2 pr-1 space-y-4">
+              {activeAdminTab === 'bookings' ? (
+                <div>
+                  <h4 className="font-extrabold text-slate-900 text-sm mb-3">Patient Appointment Requests</h4>
+                  {filteredBookings.length === 0 ? (
+                    <div className="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+                      <ClipboardList className="w-10 h-10 text-slate-400 mx-auto mb-2" />
+                      <p className="text-slate-600 font-bold text-sm">No bookings found</p>
+                    </div>
+                  ) : (
+                    filteredBookings.map((booking) => (
+                      <div key={booking.ref} className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-3">
+                        <div className="space-y-1 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-md">{booking.ref}</span>
+                            <h4 className="font-extrabold text-slate-900 text-sm">{booking.name}</h4>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-emerald-100 text-emerald-800 border-emerald-300">{booking.status}</span>
+                          </div>
+                          <div className="grid sm:grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-slate-600">
+                            <div><strong>Phone:</strong> {booking.phone}</div>
+                            <div><strong>Specialty:</strong> {booking.department}</div>
+                            <div className="sm:col-span-2 text-slate-800 font-medium">🗓️ <strong>Slot:</strong> {booking.date} at {booking.time}</div>
+                          </div>
+                        </div>
+                        <button onClick={() => deleteBooking(booking.ref)} className="text-xs text-red-600 hover:text-red-700 flex items-center gap-1"><Trash2 className="w-3 h-3" /> Delete</button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              ) : activeAdminTab === 'security' ? (
+                <div className="max-w-md mx-auto py-4">
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                        <KeyRound className="w-6 h-6" />
+                      </div>
+                      <h4 className="font-extrabold text-slate-900 text-base">Change Admin Security PIN</h4>
+                      <p className="text-xs text-slate-500 mt-1">Set a custom PIN to protect doctor portal access.</p>
+                    </div>
+
+                    <form onSubmit={handlePinChangeSubmit} className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase mb-1">New PIN</label>
+                        <input 
+                          type="password" 
+                          required 
+                          value={newPinInput} 
+                          onChange={(e) => setNewPinInput(e.target.value)} 
+                          placeholder="Enter new 4+ digit PIN" 
+                          className="w-full px-4 py-2.5 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Confirm New PIN</label>
+                        <input 
+                          type="password" 
+                          required 
+                          value={confirmPinInput} 
+                          onChange={(e) => setConfirmPinInput(e.target.value)} 
+                          placeholder="Re-enter new PIN" 
+                          className="w-full px-4 py-2.5 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                        />
+                      </div>
+
+                      {pinError && <div className="text-xs text-red-600 bg-red-50 p-3 rounded-xl border border-red-200 font-medium text-center">{pinError}</div>}
+                      {pinChangeSuccess && <div className="text-xs text-emerald-700 bg-emerald-50 p-3 rounded-xl border border-emerald-200 font-bold text-center">{pinChangeSuccess}</div>}
+
+                      <button type="submit" className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl shadow-md transition-colors text-sm">
+                        Update PIN
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 text-xs text-emerald-900 font-medium">
+                    💡 Edit any section headline, subtitle, or contact details below. Changes reflect instantly across the live website preview upon saving.
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Badge Text</label>
+                      <input 
+                        type="text" 
+                        value={siteContent.heroBadge} 
+                        onChange={(e) => setSiteContent({...siteContent, heroBadge: e.target.value})} 
+                        className="w-full px-3.5 py-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Title Highlight</label>
+                      <input 
+                        type="text" 
+                        value={siteContent.heroTitleHighlight} 
+                        onChange={(e) => setSiteContent({...siteContent, heroTitleHighlight: e.target.value})} 
+                        className="w-full px-3.5 py-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Title Main</label>
+                    <input 
+                      type="text" 
+                      value={siteContent.heroTitleMain} 
+                      onChange={(e) => setSiteContent({...siteContent, heroTitleMain: e.target.value})} 
+                      className="w-full px-3.5 py-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Subtitle</label>
+                    <textarea 
+                      rows={2}
+                      value={siteContent.heroSubtitle} 
+                      onChange={(e) => setSiteContent({...siteContent, heroSubtitle: e.target.value})} 
+                      className="w-full px-3.5 py-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                    />
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">AI Advisor Section Title</label>
+                      <input 
+                        type="text" 
+                        value={siteContent.aiSectionTitle} 
+                        onChange={(e) => setSiteContent({...siteContent, aiSectionTitle: e.target.value})} 
+                        className="w-full px-3.5 py-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Specialties Header</label>
+                      <input 
+                        type="text" 
+                        value={siteContent.specialtiesHeader} 
+                        onChange={(e) => setSiteContent({...siteContent, specialtiesHeader: e.target.value})} 
+                        className="w-full px-3.5 py-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Doctor Profile Header</label>
+                      <input 
+                        type="text" 
+                        value={siteContent.doctorsHeader} 
+                        onChange={(e) => setSiteContent({...siteContent, doctorsHeader: e.target.value})} 
+                        className="w-full px-3.5 py-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Contact Phone Number</label>
+                      <input 
+                        type="text" 
+                        value={siteContent.contactPhone} 
+                        onChange={(e) => setSiteContent({...siteContent, contactPhone: e.target.value})} 
+                        className="w-full px-3.5 py-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Clinic Address</label>
+                    <textarea 
+                      rows={2}
+                      value={siteContent.contactAddress} 
+                      onChange={(e) => setSiteContent({...siteContent, contactAddress: e.target.value})} 
+                      className="w-full px-3.5 py-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" 
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-4 border-t border-slate-200 flex justify-end gap-3">
+              <button onClick={() => setIsDashboardOpen(false)} className="bg-slate-900 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md">Save & Close Dashboard</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isBookingOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 my-8">
+            <button onClick={resetBookingForm} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100"><X className="w-5 h-5" /></button>
+            {bookingSuccess ? (
+              <div className="text-center py-6">
+                <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-4"><CheckCircle className="w-10 h-10" /></div>
+                <h3 className="text-2xl font-bold text-slate-900">Appointment Requested!</h3>
+                <p className="text-sm text-slate-600 mt-2">Thank you <strong>{formData.name}</strong>. Your consultation request has been logged.</p>
+                <button onClick={resetBookingForm} className="mt-6 w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-md text-sm">Done</button>
+              </div>
+            ) : (
+              <div>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center"><Calendar className="w-5 h-5" /></div>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-900">Book Appointment</h3>
+                    <p className="text-xs text-slate-500">Atharv Clinic • Dr. Suman Kesharwani</p>
+                  </div>
+                </div>
+                <form onSubmit={handleBookingSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Patient Full Name *</label>
+                    <input type="text" required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} placeholder="e.g. Anish Kumar" className="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Phone Number *</label>
+                      <input type="tel" required value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="10-digit Mobile" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Treatment Area</label>
+                      <select value={formData.department} onChange={(e) => setFormData({...formData, department: e.target.value})} className="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none bg-white">
+                        <option value="Skincare">Skincare</option>
+                        <option value="Hair Care">Hair Care</option>
+                        <option value="Panchkarma Detox">Panchkarma Detox</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Preferred Date *</label>
+                      <input type="date" required value={formData.date} onChange={(e) => setFormData({...formData, date: e.target.value})} className="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none bg-white" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 sm:text-xs mb-1">Preferred Time Slot</label>
+                      <select value={formData.time} onChange={(e) => setFormData({...formData, time: e.target.value})} className="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-600 focus:outline-none bg-white">
+                        <option value="10:00 AM - 12:00 PM">10:00 AM - 12:00 PM</option>
+                        <option value="04:00 PM - 06:00 PM">04:00 PM - 06:00 PM</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" className="w-full mt-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl shadow-md transition-colors text-sm">Confirm Booking Request</button>
+                </form>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
