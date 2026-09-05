@@ -990,7 +990,7 @@
             <select 
               onchange="changeAptStatus(${apt.id}, this.value)"
               class="text-xs px-2 py-1 rounded font-semibold bg-purple-950 border border-purple-700 ${apt.status === 'Confirmed' ? 'text-emerald-400' : 'text-amber-400'}"
-            
+            >
               <option value="Pending" ${apt.status === 'Pending' ? 'selected' : ''}>Pending</option>
               <option value="Confirmed" ${apt.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
               <option value="Completed" ${apt.status === 'Completed' ? 'selected' : ''}>Completed</option>
