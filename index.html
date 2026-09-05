@@ -104,12 +104,6 @@
       <a href="#matrix" onclick="toggleMobileMenu()" class="text-purple-900 font-medium py-1">Therapy Matrix</a>
       <a href="#about" onclick="toggleMobileMenu()" class="text-purple-900 font-medium py-1">Dr. Suman</a>
       <a href="#contact" onclick="toggleMobileMenu()" class="text-purple-900 font-medium py-1">Location</a>
-      <button 
-        onclick="openBookingModal(); toggleMobileMenu();"
-        class="bg-orange-500 text-white font-semibold py-2.5 rounded-lg text-center flex justify-center items-center gap-2 mt-1 shadow"
-      >
-        <i data-lucide="calendar" class="w-4 h-4"></i> Book Appointment
-      </button>
     </div>
   </header>
 
@@ -188,13 +182,6 @@
             Skin Care Treatments
           </h3>
         </div>
-        <button
-          id="tabBookBtn"
-          onclick="openBookingModal('Skin Treatment')"
-          class="bg-orange-500 text-white px-5 py-2.5 rounded-lg font-semibold shadow hover:opacity-90 transition shrink-0"
-        >
-          Book for Skin Treatment
-        </button>
       </div>
 
       <!-- Tab Body Grid -->
@@ -248,7 +235,7 @@
           <i data-lucide="user" class="w-24 h-24 text-purple-300"></i>
         </div>
         <h3 class="text-2xl font-bold text-orange-400">Dr. Suman Kesharwani</h3>
-        <p class="text-purple-200 text-sm font-medium mt-1">B.A.M.S. | Ayurvedic Physician & Panchkarma Specialist</p>
+        <p class="text-purple-200 text-sm font-medium mt-1">B.A.M.S. | Ayurvedic Physician & Panchkarma Specialist | </p>
       </div>
 
       <div class="w-full md:w-2/3 space-y-4">
@@ -419,19 +406,13 @@
               </div>
               <div>
                 <p class="font-bold text-purple-950 text-base">Contact Phone</p>
-                <p class="text-gray-700 mt-1">+91 98765 43210 / +91 7752 123456</p>
+                <p class="text-gray-700 mt-1"> +91 83494 49034 </p>
               </div>
             </div>
           </div>
         </div>
 
         <div class="mt-8 pt-6 border-t border-purple-200">
-          <button
-            onclick="openBookingModal()"
-            class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl transition shadow-md text-center"
-          >
-            Schedule Consultation Now
-          </button>
         </div>
       </div>
 
@@ -467,13 +448,6 @@
   <!-- BOOKING APPOINTMENT MODAL -->
   <div id="bookingModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-in fade-in duration-200">
-      <button 
-        onclick="closeBookingModal()"
-        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none"
-      >
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-
       <!-- Success View -->
       <div id="bookingSuccessBox" class="hidden text-center py-8">
         <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
